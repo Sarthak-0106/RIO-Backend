@@ -88,6 +88,7 @@ public class CommentService {
 //        return results.getMappedResults();
 //    }
 
+    // added tree structure to be fetched
     public List<Comment> getCommentsByPostId(String postId) {
         List<Comment> allComments = commentRepository.findByPostId(postId);
 
