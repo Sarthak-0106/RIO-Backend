@@ -15,8 +15,11 @@ public class User {
 
     @Id
     private String id;
-
-    private String userId;   // UUID from auth-service
-    private String username; // e.g. User42
+    private String email;
+    private String password;
+    private String userId;
+    private String username;
     private Instant joinedAt;
+    private String authorId;
+    private String refreshToken;
 }

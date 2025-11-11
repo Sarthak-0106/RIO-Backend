@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -73,16 +74,13 @@ public class UserService {
     }
 
     public ResponseEntity<?> refresh(Map<String, String> request) {
-        String refreshToken = request.get("refreshToken");
-        if (!jwtService.validateToken(refreshToken))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
+        String email = request.get("email");
 
-        String email = jwtService.extractEmail(refreshToken);
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (!refreshToken.equals(user.getRefreshToken()))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token mismatch");
+        String refreshToken = user.getRefreshToken();
+        if (!jwtService.validateToken(refreshToken))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
 
         String newAccessToken = jwtService.generateAccessToken(email);
         return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
